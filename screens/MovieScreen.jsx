@@ -43,8 +43,6 @@ const MovieScreen = () => {
   const { params: item } = useRoute();
   const navigation = useNavigation();
 
-  const movieName = "Ant man and the wasp";
-
   useEffect(() => {
     // call api
     // console.log("item id: ", item);
@@ -57,10 +55,11 @@ const MovieScreen = () => {
   const getMovieDetails = async (id) => {
     const data = await fetchMovieDetails(id);
     // console.log("got movie details: ", data);
+    setLoading(false);
     if (data) {
       setMovie(data);
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   const getMovieCredits = async (id) => {
