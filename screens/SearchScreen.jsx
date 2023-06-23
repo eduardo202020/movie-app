@@ -12,13 +12,18 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { XMarkIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
+import Loading from "../components/Loading";
 
 const { width, height } = Dimensions.get("window");
 
 const SearchScreen = (props) => {
   const navigation = useNavigation();
+
   const [results, setResults] = useState([1, 2, 3, 4]);
+  const [loading, setLoading] = useState(false);
+
   const movieName = "Ant-Man and the Wasp: Quantumania";
+
   return (
     <SafeAreaView className="bg-neutral-800 flex-1">
       <View className="mx-4 pl-2 mb-3 flex-row justify-between items-center border border-neutral-500 rounded-full ">
@@ -37,7 +42,9 @@ const SearchScreen = (props) => {
 
       {/* results */}
 
-      {results.length > 0 ? (
+      {loading ? (
+        <Loading />
+      ) : results.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 15 }}
