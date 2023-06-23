@@ -1,18 +1,7 @@
-export const apiKey =
-  "place your api key here from : https://www.themoviedb.org";
+export const apiKey = process.env.API_KEY;
 
 // this data was used for the development of the app
 
-export interface moviesDataProps {
-  id: number;
-  title: string;
-  backgroundPoster: string;
-  image: string;
-  description: string;
-  releaseDate: string;
-  releaseYear: string;
-  runTime: string;
-}
 export const moviesData: moviesDataProps[] = [
   {
     id: 2,
@@ -27,16 +16,6 @@ export const moviesData: moviesDataProps[] = [
     runTime: "170",
   },
 ];
-
-export interface personDataProps {
-  name: string;
-  birthPlace: string;
-  birthday: string;
-  knownFor: string;
-  gender: string;
-  popularity: string;
-  biography: string;
-}
 
 export const personData: personDataProps = {
   name: "Keanu Reeves",
