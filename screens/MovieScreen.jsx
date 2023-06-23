@@ -175,14 +175,17 @@ const MovieScreen = () => {
 
       {/* cast */}
 
-      <Cast cast={cast} navigation={navigation} />
+      {cast.length > 0 && <Cast cast={cast} navigation={navigation} />}
 
       {/* similar moview */}
-      <MovieList
-        title="Similar Movies"
-        data={similarMovies}
-        hideSeeAll={true}
-      />
+
+      {similarMovies.length > 0 && (
+        <MovieList
+          title="Similar Movies"
+          data={similarMovies}
+          hideSeeAll={true}
+        />
+      )}
     </ScrollView>
   );
 };
