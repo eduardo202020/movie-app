@@ -20,15 +20,25 @@ import MovieList from "../components/MovieList";
 import Loading from "../components/Loading";
 
 const { width, height } = Dimensions.get("window");
+// api
+import {
+  fallbackMoviePoster,
+  fetchMovieCredits,
+  fetchMovieDetails,
+  fetchSimilarMovies,
+  image500,
+} from "../api/moviedb";
+
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : " mt-3";
 
 const MovieScreen = () => {
   const [isFavorite, setIsFavorite] = useState(false);
-  const [cast, setcast] = useState([1, 2, 3, 4, 5]);
-  const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4]);
+  const [cast, setcast] = useState([]);
+  const [similarMovies, setSimilarMovies] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState({});
 
   const { params: item } = useRoute();
   const navigation = useNavigation();
@@ -37,7 +47,35 @@ const MovieScreen = () => {
 
   useEffect(() => {
     // call api
+    // console.log("item id: ", item);
+    setLoading(true);
+    getMovieDetails(item.id);
+    getMovieCredits(item.id);
+    getSimilarMovies(item.id);
   }, [item]);
+
+  const getMovieDetails = async (id) => {
+    const data = await fetchMovieDetails(id);
+    // console.log("got movie details: ", data);
+    if (data) {
+      setMovie(data);
+    }
+    setLoading(false);
+  };
+
+  const getMovieCredits = async (id) => {
+    const data = await fetchMovieCredits(id);
+    // console.log("credits: ", data);
+    if (data && data.cast) {
+      setcast(data.cast);
+    }
+  };
+
+  const getSimilarMovies = async (id) => {
+    const data = await fetchSimilarMovies(id);
+    // console.log("got similar movies: ", data);
+    if (data && data.results) setSimilarMovies(data.results);
+  };
 
   return (
     <ScrollView
@@ -75,7 +113,10 @@ const MovieScreen = () => {
         ) : (
           <View>
             <Image
-              source={require("../assets/images/moviePoster2.png")}
+              // source={require("../assets/images/moviePoster2.png")}
+              source={{
+                uri: image500(movie?.poster_path) || fallbackMoviePoster,
+              }}
               style={{ width, height: height * 0.55 }}
             />
             <LinearGradient
@@ -93,15 +134,31 @@ const MovieScreen = () => {
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         {/* title */}
         <Text className="text-white text-center text-3xl font-bold tracking-wider">
-          {movieName}
+          {movie.title}
         </Text>
-        <Text className="text-neutral-400 font-semibold text-base text-center ">
-          Released · 2020 · 170 min
-        </Text>
+        {/* status , relese, runtime */}
+        {movie?.id ? (
+          <Text className="text-neutral-400 font-semibold text-base text-center ">
+            {movie?.status} · {movie?.release_date?.split("-")[0]} ·{" "}
+            {movie?.runtime} min
+          </Text>
+        ) : null}
 
         {/* genres */}
         <View className="flex-row justify-center mx-4 space-x-2">
-          <Text className="text-neutral-400 font-semibold text-base text-center">
+          {movie?.genres?.map((genre, index) => {
+            const showDot = index + 1 != movie.genres.length;
+            return (
+              <Text
+                key={index}
+                className="text-neutral-400 font-semibold text-base text-center"
+              >
+                {genre?.name} {showDot ? "·" : null}
+              </Text>
+            );
+          })}
+
+          {/* <Text className="text-neutral-400 font-semibold text-base text-center">
             Action ·
           </Text>
           <Text className="text-neutral-400 font-semibold text-base text-center">
@@ -109,14 +166,11 @@ const MovieScreen = () => {
           </Text>
           <Text className="text-neutral-400 font-semibold text-base text-center">
             Comedy ·
-          </Text>
+          </Text> */}
         </View>
         {/* Description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut nesciunt
-          eaque tenetur illo voluptates, temporibus vero autem deleniti ex
-          molestias. Voluptatum ullam labore recusandae quis quod unde, minima
-          ipsa culpa.
+          {movie?.overview}
         </Text>
       </View>
 

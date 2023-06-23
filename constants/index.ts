@@ -1,4 +1,4 @@
-export const apiKey = process.env.API_KEY;
+export const apiKey = "642586394cca5d7f1d524b6cd17ea491";
 
 // this data was used for the development of the app
 
